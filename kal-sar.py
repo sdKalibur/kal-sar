@@ -68,6 +68,7 @@ def get_sysstat_day(day) :
     sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
 
     my_sadf = os.system(sadf_command)
+    # os.popen('cat /etc/services').read()
     return my_sadf
 
 def csv_stat_w(csv_obj):
