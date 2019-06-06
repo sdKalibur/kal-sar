@@ -62,13 +62,16 @@ def get_sysstat_day(day) :
         day = day
     sysstat_file = sysstat_file_path() + str(day)
     stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
-    stat_opts = ['-d', '--dev=sda']
+    # stat_opts = ['-d', '--dev=sda']
+    stat_opts = ['-u']
     stat_opts = [i.center(len(i) + 2, ' ') for i in stat_opts ] # clean space the opts
 
     sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
 
-    my_sadf = os.system(sadf_command)
+    my_sadf = os.popen(sadf_command).read()
+
     # os.popen('cat /etc/services').read()
+    # print('my sadf ', my_sadf)
     return my_sadf
 
 def csv_stat_w(csv_obj):
@@ -83,19 +86,34 @@ def csv_file_r(csv_file):
         csv_data = csv.reader(csvfile, delimiter=';')
         # header = next(csv_data)
         # print('csv data contains ' + header, '\n', csv_data)
-        [ print(_0) for _ in csv_data ]
+        [ print(_) for _ in csv_data ]
         csv_list = [ _ for _ in csv_data ]
         print('bugging', csv_list)
     return csv_list
 
 def csv_obj_iter(csv_obj):
     """ I interate a csv formatted obj"""
-    for i in csv_obj:
-        if '#' in csv_obj[i][0]:
+    format(csv_obj, spec='csv')
+    csv_data = csv.reader(csv_obj, delimiter=';')
+    print('csv data: ', csv_data)
+    data = [ _ for _ in csv_data ]
+    print('hello', data)
+    header = []
+    for i in data:
+        count = 0
+        # print(i.split(';'))
+        data[count].split(';')
+        data[count].strip('\n')
+        print(i)
+        if '#' in i:
+            header.append(data[count])
+            data.remove(data[count])
             continue
         else:
-            print(csv_obj[i])
-    return
+            print(data[count])
+        count += 1
+    print('processed', data)
+    return data
 
 
 def main () :
