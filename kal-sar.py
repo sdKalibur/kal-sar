@@ -68,11 +68,11 @@ def get_sysstat_day(day) :
 
     sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
 
-    my_sadf = os.popen(sadf_command).read()
-
-    # os.popen('cat /etc/services').read()
-    # print('my sadf ', my_sadf)
-    return my_sadf
+    my_sadf = os.popen(sadf_command).read().split('\n')
+    print('my sadf ', my_sadf)
+    sadf_list = [(_).split(';') for _ in my_sadf ]
+    print('sadf list', sadf_list)
+    return my_sadf,
 
 def csv_stat_w(csv_obj):
     """give me a csv formatted object to write"""
@@ -93,27 +93,35 @@ def csv_file_r(csv_file):
 
 def csv_obj_iter(csv_obj):
     """ I interate a csv formatted obj"""
-    format(csv_obj, spec='csv')
     csv_data = csv.reader(csv_obj, delimiter=';')
-    print('csv data: ', csv_data)
-    data = [ _ for _ in csv_data ]
-    print('hello', data)
-    header = []
-    for i in data:
-        count = 0
-        # print(i.split(';'))
-        data[count].split(';')
-        data[count].strip('\n')
-        print(i)
-        if '#' in i:
-            header.append(data[count])
-            data.remove(data[count])
-            continue
+
+    print('csv data:\n', csv_obj)
+    count = 0
+    stats_data = []
+    print('#' * 20)
+    [print(_).split(';') for _ in csv_obj[0] ]
+    # print('stats data: ', stats_data)
+    for i in csv_obj[0]:
+        print('stats data row: ', i.split(';') )
+        stats_data.append(stats_data.append(i))
+    # data = [ _.split(';') for _ in csv_data ]
+    # print(data)
+    # sys_info = [ _.strip() for _ in data ]
+    # print('hello', sys_info)
+        header = []
+        # in range(5):
+    #     # # # print(i.split(';'))
+    #     # # data[count].split(';')
+    #     # # data[count].strip('\n')
+    #     # # print(i)
+        if '#' in stats_data[0]:
+            header.append(i)
         else:
-            print(data[count])
+            print('preserved ' + stats_data[count] + 'row number: ', count)
         count += 1
-    print('processed', data)
-    return data
+    print(header, count, stats_data)
+    # print('processed', sys_info)
+    return 1 + 1
 
 
 def main () :
