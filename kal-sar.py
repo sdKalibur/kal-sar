@@ -5,7 +5,7 @@ from dis import dis
 
 # functional stuff
 import datetime
-import sys, csv, json, sadf, os, platform
+import sys, csv, json, os, platform
 
 class kal_server():
     pass
@@ -99,11 +99,11 @@ def csv_obj_iter(csv_obj):
     count = 0
     stats_data = []
     print('#' * 20)
-    [print(_).split(';') for _ in csv_obj[0] ]
+    # [print(_).split(';') for _ in csv_obj[0] ]
     # print('stats data: ', stats_data)
     for i in csv_obj[0]:
-        print('stats data row: ', i.split(';') )
-        stats_data.append(stats_data.append(i))
+        print('stats data row: ', i.split(';'))
+        stats_data.append(stats_data.append(i.split(';')))
     # data = [ _.split(';') for _ in csv_data ]
     # print(data)
     # sys_info = [ _.strip() for _ in data ]
@@ -117,9 +117,9 @@ def csv_obj_iter(csv_obj):
         if '#' in stats_data[0]:
             header.append(i)
         else:
-            print('preserved ' + stats_data[count] + 'row number: ', count)
+            print('preserved ' + str(stats_data[count]) + 'row number: ', count)
         count += 1
-    print(header, count, stats_data)
+    print('Header :', header ,'Count :',  count, 'Stats :', stats_data)
     # print('processed', sys_info)
     return 1 + 1
 
