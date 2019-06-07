@@ -103,7 +103,7 @@ def csv_obj_iter(csv_obj):
     # print('stats data: ', stats_data)
     for i in csv_obj[0]:
         print('stats data row: ', i.split(';'))
-        stats_data.append(stats_data.append(i.split(';')))
+        stats_data.append(stats_data.append(i.strip().split(';')))
     # data = [ _.split(';') for _ in csv_data ]
     # print(data)
     # sys_info = [ _.strip() for _ in data ]
@@ -114,15 +114,25 @@ def csv_obj_iter(csv_obj):
     #     # # data[count].split(';')
     #     # # data[count].strip('\n')
     #     # # print(i)
-        if '#' in stats_data[0]:
+        if '#' in i[0]:
             header.append(i)
+            print("I modified header", header)
         else:
             print('preserved ' + str(stats_data[count]) + 'row number: ', count)
+            # append to stats_data
         count += 1
-    print('Header :', header ,'Count :',  count, 'Stats :', stats_data)
+    bar = "- + " * 20
+    print(bar)
+    print('Header :', header )
+    print(bar)
+    print('Count :',  count)
+    print(bar)
+    print('Stats :', stats_data)
     # print('processed', sys_info)
     return 1 + 1
 
+def ssh_connector(dest_host):
+    pass
 
 def main () :
     """"gets day of the month 01-31"""
