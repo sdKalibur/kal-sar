@@ -5,7 +5,9 @@ from dis import dis
 
 # functional stuff
 import datetime
-import sys, csv, json, os, platform
+import sys, csv, json, os, platform # depreciated in python3 commands use subprocess
+import subprocess
+
 
 class kal_server():
     pass
@@ -68,11 +70,12 @@ def get_sysstat_day(day) :
 
     sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
 
-    my_sadf = os.popen(sadf_command).read().strip('\'').strip(' ').split(',') #.split('\n')
+    # my_sadf = os.popen(sadf_command).read().strip('\'').strip(' ').split(',') #.split('\n')
+    my_sadf = subprocess.getoutput(sadf_command)
     print('my sadf ', my_sadf)
-    sadf_list = [(_).split(';') for _ in my_sadf ]
+    sadf_list = [_.split('\n') for _ in my_sadf ]
     print('sadf list', sadf_list)
-    return my_sadf,
+    return my_sadf
 
 def csv_stat_w(csv_obj):
     """give me a csv formatted object to write"""
@@ -94,15 +97,15 @@ def csv_file_r(csv_file):
 def csv_obj_iter(csv_obj):
     """ I interate a csv formatted obj"""
     csv_data = csv.reader(csv_obj, delimiter=';')
-    csv_obj = str(csv_obj)
+
     print('csv data:\n', csv_obj)
     count = 0
     stats_data = []
     print('#' * 20)
     # [print(_).split(';') for _ in csv_obj[0] ]
-    for data in csv_obj[0]:
+    for data in csv_obj:
         # i = data
-        i = [ _.split(';') for _ in data[0][count] if not None ]
+        i = [ _.split(';') for _ in data[count] if not None ]
         header = []
         print("print i count", i[count])
         stats_data.append(stats_data.append(i[count].strip('\'').strip(' ').split(',')))
