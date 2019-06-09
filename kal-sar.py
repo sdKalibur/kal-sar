@@ -68,7 +68,7 @@ def get_sysstat_day(day) :
 
     sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
 
-    my_sadf = os.popen(sadf_command).read().split('\n')
+    my_sadf = os.popen(sadf_command).read().strip('\'').strip(' ').split(',') #.split('\n')
     print('my sadf ', my_sadf)
     sadf_list = [(_).split(';') for _ in my_sadf ]
     print('sadf list', sadf_list)
@@ -94,32 +94,27 @@ def csv_file_r(csv_file):
 def csv_obj_iter(csv_obj):
     """ I interate a csv formatted obj"""
     csv_data = csv.reader(csv_obj, delimiter=';')
-
+    csv_obj = str(csv_obj)
     print('csv data:\n', csv_obj)
     count = 0
     stats_data = []
     print('#' * 20)
     # [print(_).split(';') for _ in csv_obj[0] ]
-    # print('stats data: ', stats_data)
-    for i in csv_obj[0]:
-        print('stats data row: ', i.split(';'))
-        stats_data.append(stats_data.append(i.strip().split(';')))
-    # data = [ _.split(';') for _ in csv_data ]
-    # print(data)
-    # sys_info = [ _.strip() for _ in data ]
-    # print('hello', sys_info)
+    for data in csv_obj[0]:
+        # i = data
+        i = [ _.split(';') for _ in data[0][count] if not None ]
         header = []
-        # in range(5):
-    #     # # # print(i.split(';'))
-    #     # # data[count].split(';')
-    #     # # data[count].strip('\n')
-    #     # # print(i)
-        if '#' in i[0]:
-            header.append(i)
-            print("I modified header", header)
+        print("print i count", i[count])
+        stats_data.append(stats_data.append(i[count].strip('\'').strip(' ').split(',')))
+        # stats_data.append(stats_data.append(i[count].split(';')))
+        # if type(stats_data[count]) == NoneType :
+        #     print("I found a NoneType")
+        if '#' in stats_data[count]:
+            if not stats_data[count] in header:
+                header.append(stats_data[count])
+                print("I modified header :\n", header)
         else:
-            print('preserved ' + str(stats_data[count]) + 'row number: ', count)
-            # append to stats_data
+            print("Header remains as :\n", header)
         count += 1
     bar = "- + " * 20
     print(bar)
