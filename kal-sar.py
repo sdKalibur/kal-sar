@@ -6,6 +6,7 @@ from dis import dis
 # functional stuff
 import datetime
 import sys, csv, json, os, platform
+import subprocess
 
 class kal_server():
     pass
@@ -35,27 +36,22 @@ def draw_a_graph () :
 
 def sadf_time_window (): #start, end) :
     """Search sysstat for a time period"""
-    # sadf /var/log/sysstat/sa23 -s 17:00 -e 17:20
-    # -d - comma delimited csv
-    # -j - json
-    # -- -d - sar options such -d -q -u etc.
-    # os.system('ssh kalibur-mce sadf /var/log/sysstat/sa01')
+
     start_time = str(input('Enter start time hh:mm > '))
     end_time = str(input('Enter end time hh:mm > '))
     time_window = ' -s ' + start_time + ' -e ' + end_time
-    # print(time_window)
     return time_window
 
 def sysstat_file_path():
+    """ Sets the OS default path for syssta log file. """
     if 'ubuntu' in (platform.platform().lower()):
         sysstat_file = '/var/log/sysstat/sa'
     elif 'redhat' or 'centos' or 'fedora' in (platform.platform().lower()):
         sysstat_file = '/var/log/sa/sa'
-    print(sysstat_file)
     return sysstat_file
 
 def get_sysstat_day(day) :
-    """Locates sysstat file and excutes sadf command"""
+    """ Locates sysstat file and excutes sadf command """
     if len(day) <= 1:
         day = '0' + day
     else:
@@ -63,16 +59,34 @@ def get_sysstat_day(day) :
     sysstat_file = sysstat_file_path() + str(day)
     stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
     # stat_opts = ['-d', '--dev=sda']
-    stat_opts = ['-u']
-    stat_opts = [i.center(len(i) + 2, ' ') for i in stat_opts ] # clean space the opts
+    # stat_opts = ''
+    mode = get_stat_mode()
+    # stat_opts.append(str(mode))
+    # stat_opts = [i.center(len(i) + 2, ' ') for i in stat_opts ] # clean space the opts
+    print('stat mode: ', mode)
+    sadf_command = 'sadf ', stat_fmt, ' -- ', mode, sysstat_file, sadf_time_window()
+    print('I will execute this:', sadf_command)
+    my_sadf = subprocess.getoutput(sadf_command)
+    print('My sadf output:\n', my_sadf)
 
-    sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file + sadf_time_window()
+    return my_sadf
 
-    my_sadf = os.popen(sadf_command).read().strip('\'').strip(' ').split(',') #.split('\n')
-    print('my sadf ', my_sadf)
-    sadf_list = [(_).split(';') for _ in my_sadf ]
-    print('sadf list', sadf_list)
-    return my_sadf,
+def get_stat_mode():
+    """ Gets the desired sysstat matric e,g cpu load, diskIO, etc """
+    modes = {'CPU Load' : '-q', 'CPU Utilization':'-u', 'Disk IO':'-d -p', 'Network IO': '-n DEV'}
+    menu_modes = []
+    for i in modes:
+        menu_modes.append(i)
+
+    print('select a mode index :')
+    for i in menu_modes:
+        print(menu_modes.index(i), ' : ', i)
+    # print(menu_modes)
+    mode_index = int(input('Enter a numeric value matching at index above: '))
+    mode = modes.get(menu_modes[mode_index])
+    return str(mode)
+
+    # get a function to work the netty gretty of the specific device selection bits
 
 def csv_stat_w(csv_obj):
     """give me a csv formatted object to write"""
@@ -87,50 +101,43 @@ def csv_file_r(csv_file):
         # header = next(csv_data)
         # print('csv data contains ' + header, '\n', csv_data)
         [ print(_) for _ in csv_data ]
-        csv_list = [ _ for _ in csv_data ]
-        print('bugging', csv_list)
+        csv_list = [ _.split(';') for _ in csv_data ]
+        print('b   ugging', csv_list)
     return csv_list
 
 def csv_obj_iter(csv_obj):
     """ I interate a csv formatted obj"""
-    csv_data = csv.reader(csv_obj, delimiter=';')
-    csv_obj = str(csv_obj)
-    print('csv data:\n', csv_obj)
+
+    stat_list = csv_obj.strip().split('\n')
     count = 0
-    stats_data = []
-    print('#' * 20)
-    # [print(_).split(';') for _ in csv_obj[0] ]
-    for data in csv_obj[0]:
-        # i = data
-        i = [ _.split(';') for _ in data[0][count] if not None ]
-        header = []
-        print("print i count", i[count])
-        stats_data.append(stats_data.append(i[count].strip('\'').strip(' ').split(',')))
-        # stats_data.append(stats_data.append(i[count].split(';')))
-        # if type(stats_data[count]) == NoneType :
-        #     print("I found a NoneType")
-        if '#' in stats_data[count]:
-            if not stats_data[count] in header:
-                header.append(stats_data[count])
-                print("I modified header :\n", header)
+    header = []
+    data_ls = []
+    for row in stat_list:
+        row_ls = (row.split(';'))
+        if '#' in row_ls[0]:
+            header.append(row_ls)
+            # print("I modified header :\n", header)
         else:
-            print("Header remains as :\n", header)
+            # print("Header remains as :\n", header)
+            data_ls.append(row_ls)
+            print(data_ls)
         count += 1
-    bar = "- + " * 20
-    print(bar)
-    print('Header :', header )
-    print(bar)
-    print('Count :',  count)
-    print(bar)
-    print('Stats :', stats_data)
-    # print('processed', sys_info)
-    return 1 + 1
+        # for i in row_ls: # Maybe log this in the future.
+        #     print(i, ' : ', type(i))
+    # print(header)
+    print(data_ls)
+
+    return data_ls
 
 def ssh_connector(dest_host):
     pass
 
 def main () :
-    """"gets day of the month 01-31"""
+    """"gets day of the month 01-31 and metric to collect e,g CPU Load stats."""
+    # mode = get_stat_mode()
+
+    # mode = 'cpu_util'
+
     day = str(input('Which day do you want to check stats for :')) # need to add contraints for not accepting invalid days.
     if len(day) <= 1:
         day = '0' + day
@@ -140,14 +147,10 @@ def main () :
     # get_sysstat_day(day)
     print(day)
 
-    csv_obj_iter(get_sysstat_day(day))
-    # z = []
-    # for i in str(get_sysstat_day(day)):
-    #     # look to work with csv, json, or list
-    #     print(i)
-    #     z = z.append(i)
-    # return z
-    # sys.exit()
+    stat_info = csv_obj_iter(get_sysstat_day(day))
+    # print('Return info : \n', stat_info)
+    # for _ in stat_info:
+    #      print(_, end='\n')
 
 if __name__ == '__main__' :
     main()

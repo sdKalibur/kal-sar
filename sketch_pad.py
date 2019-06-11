@@ -1,29 +1,40 @@
-import csv
-#
-# with open ('sample.csv', newline='') as csvfile:
-#      csv_reader = csv.reader(csvfile, delimiter=';')
-#      # header = next(csv_reader)
-#      # header = next(csv_reader)
-#      data = [ _ for _ in csv_reader ]
-#
-# for i in range(len(data)):
-#          if '#' in data[i][0] :
-#             continue
-#          else:
-#             print(data[i])
+import csv, platform, subprocess
 
-foo = [[1,2,3,4,5,6], [0,9,8,7], [12,32,44]]
-# for x in range(len(foo)):
-#     for z in range(len(foo[x])):
-#         print(x,':',z)
-#
-# [ [ i for i in range(len(foo[z]) ] print(foo[z][i]) for z in range(len(foo)) ]
+def sysstat_file_path():
+    if 'ubuntu' in (platform.platform().lower()):
+        sysstat_file = '/var/log/sysstat/sa'
+    elif 'redhat' or 'centos' or 'fedora' in (platform.platform().lower()):
+        sysstat_file = '/var/log/sa/sa'
+    print(sysstat_file)
+    return sysstat_file
 
-# [print(foo[x]) for x in range(len(foo)) ]
-w = (len(foo) -1)
-z = (len(foo[x] - 1 )
 
-[print([foo[y] for y in range(0,(len(foo[x] - 1 )))]) x for x in range(0, 1)]
-# [[print(foo[y]) for y in range(0, z) ] for x in range(0, w )]
-# bah = [[ y for y in range(len(foo[x]) + 1)] for x in range(len(foo))]
-# print(bah)
+def get_sysstat_day() :
+    """Locates sysstat file and excutes sadf command"""
+    day = '7'
+    if len(day) <= 1:
+        day = '0' + day
+    else:
+        day = day
+    sysstat_file = sysstat_file_path() + str(day)
+    stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
+    # stat_opts = ['-d', '--dev=sda']
+    stat_opts = ['-u']
+    stat_opts = [i.center(len(i) + 2, ' ') for i in stat_opts ] # clean space the opts
+
+    sadf_command = 'sadf ' + stat_fmt + ' -- ' + str(' '.join(stat_opts)) + sysstat_file, "-s 12:00 -e 13:00"
+
+    my_sadf = subprocess.getoutput(sadf_command)
+
+    print('my sadf ', my_sadf)
+    # sadf_list = [(_).split(';') for _ in my_sadf ]
+    # print('sadf list', sadf_list)
+    return my_sadf
+
+csv_object = get_sysstat_day()
+
+stat_list = csv_object.strip().split('\n')
+
+
+for row in stat_list:
+    print(row.split(';'))
