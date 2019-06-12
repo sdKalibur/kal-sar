@@ -59,15 +59,17 @@ def get_sysstat_day(day) :
     sysstat_file = sysstat_file_path() + str(day)
     stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
     # stat_opts = ['-d', '--dev=sda']
-    # stat_opts = ''
-    mode = get_stat_mode()
-    # stat_opts.append(str(mode))
-    # stat_opts = [i.center(len(i) + 2, ' ') for i in stat_opts ] # clean space the opts
+    sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window()) ]
+    mode = str(get_stat_mode())
+    sar_opts.append(str(mode))
+    sar_opts = [i.center(len(i) + 2, ' ') for i in sar_opts ] # clean space the opts
     print('stat mode: ', mode)
-    sadf_command = 'sadf ', stat_fmt, ' -- ', mode, sysstat_file, sadf_time_window()
-    print('I will execute this:', sadf_command)
+    sadf_command = ''
+    for i in sar_opts:
+        sadf_command += str(i).center(len(str(i))+1,' ')
+    # print('I will execute this:', sadf_command)
     my_sadf = subprocess.getoutput(sadf_command)
-    print('My sadf output:\n', my_sadf)
+    # print('My sadf output:\n', my_sadf)
 
     return my_sadf
 
@@ -80,7 +82,7 @@ def get_stat_mode():
 
     print('select a mode index :')
     for i in menu_modes:
-        print(menu_modes.index(i), ' : ', i)
+        print('\t', menu_modes.index(i), ' : ', i)
     # print(menu_modes)
     mode_index = int(input('Enter a numeric value matching at index above: '))
     mode = modes.get(menu_modes[mode_index])
