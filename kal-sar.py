@@ -50,7 +50,7 @@ def sysstat_file_path():
         sysstat_file = '/var/log/sa/sa'
     return sysstat_file
 
-def get_sysstat_day(day) :
+def get_sysstat_day(day,mode='') :
     """ Locates sysstat file and excutes sadf command """
     if len(day) <= 1:
         day = '0' + day
@@ -60,9 +60,22 @@ def get_sysstat_day(day) :
     stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
     # stat_opts = ['-d', '--dev=sda']
     sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window()) ]
-    mode = str(get_stat_mode())
-    sar_opts.append(str(mode))
-    sar_opts = [i.center(len(i) + 2, ' ') for i in sar_opts ] # clean space the opts
+
+    if mode == '':
+        mode = str(get_stat_mode())
+    else:
+        pass
+
+    # try:
+    #     if mode not in modes.items:
+    #         print(mode, "Is an invalid mode.  Mode options are: \n" )
+    #     else:
+    #         sar_opts.append(str(mode))
+
+
+    sar_opts.append(mode)
+
+    sar_opts = [i.center(len(i) + 2, ' ') for i in sar_opts ]
     print('stat mode: ', mode)
     sadf_command = ''
     for i in sar_opts:
@@ -74,7 +87,9 @@ def get_sysstat_day(day) :
     return my_sadf
 
 def get_stat_mode():
-    """ Gets the desired sysstat matric e,g cpu load, diskIO, etc """
+    """ Gets the desired sysstat matric e,g cpu load, diskIO, etc. """
+    # This should be the starting point, collected the mode, and time requirements finally doing the analysis.
+
     modes = {'CPU Load' : '-q', 'CPU Utilization':'-u', 'Disk IO':'-d -p', 'Network IO': '-n DEV'}
     menu_modes = []
     for i in modes:
@@ -113,21 +128,26 @@ def csv_obj_iter(csv_obj):
     stat_list = csv_obj.strip().split('\n')
     count = 0
     header = []
-    data_ls = []
+    data_ls = ['']
     for row in stat_list:
         row_ls = (row.split(';'))
         if '#' in row_ls[0]:
-            header.append(row_ls)
+            if  len(header) == 0:
+                header.append(row_ls)
+            else:
+                continue
             # print("I modified header :\n", header)
         else:
-            # print("Header remains as :\n", header)
+            print("I am this row: ", row_ls)
             data_ls.append(row_ls)
-            print(data_ls)
-        count += 1
+            for item in row_ls:
+                print("splitting this sucker", item.strip())
+            print('print row count', data_ls[count])
+            count += 1
         # for i in row_ls: # Maybe log this in the future.
         #     print(i, ' : ', type(i))
     # print(header)
-    print(data_ls)
+    print('will return \n', data_ls)
 
     return data_ls
 
