@@ -1,0 +1,12 @@
+kal-inspiron;-1;2019-06-02 11:19:23 UTC;LINUX-RESTART	(8 CPU)
+# hostname;interval;timestamp;DEV;tps;rkB/s;wkB/s;areq-sz;aqu-sz;await;svctm;%util
+kal-inspiron;-1;2019-06-02 11:25:56 UTC;LINUX-RESTART	(8 CPU)
+# hostname;interval;timestamp;DEV;tps;rkB/s;wkB/s;areq-sz;aqu-sz;await;svctm;%util
+kal-inspiron;600;2019-06-02 11:45:01 UTC;sda;3.86;3.25;79.63;21.45;0.00;0.52;0.46;0.18
+kal-inspiron;600;2019-06-02 11:55:01 UTC;sda;3.91;6.49;100.53;27.40;0.00;0.59;0.46;0.18
+kal-inspiron;600;2019-06-02 12:05:01 UTC;sda;3.84;0.01;83.39;21.71;0.00;0.53;0.38;0.15
+kal-inspiron;600;2019-06-02 12:15:01 UTC;sda;3.32;1.32;73.84;22.63;0.00;0.56;0.44;0.15
+kal-inspiron;600;2019-06-02 12:25:01 UTC;sda;4.91;0.01;146.50;29.84;0.00;0.64;0.37;0.18
+kal-inspiron;600;2019-06-02 12:35:01 UTC;sda;3.62;0.51;108.90;30.21;0.00;0.61;0.44;0.16
+kal-inspiron;600;2019-06-02 12:45:01 UTC;sda;2.47;0.13;35.35;14.38;0.00;0.48;0.56;0.14
+kal-inspiron;600;2019-06-02 12:55:01 UTC;sda;6.95;0.81;90.30;13.12;0.00;0.38;0.26;0.18
