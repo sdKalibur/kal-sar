@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
 
-from kal-sar.py import *
-from ssh-klient.py import *
+from kal_sar.py import *
+from ssh_klient.py import
+
+client.connect(hostname, port=port, username=username, password=password)
