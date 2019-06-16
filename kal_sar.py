@@ -129,7 +129,7 @@ def csv_obj_iter(csv_obj):
     stat_list = csv_obj.strip().split('\n')
     count = 0
     header = []
-    data_ls = ['']
+    data_ls = []
     for row in stat_list:
         row_ls = (row.split(';'))
         if '#' in row_ls[0]:
@@ -138,19 +138,25 @@ def csv_obj_iter(csv_obj):
             else:
                 continue
             # print("I modified header :\n", header)
+        elif row_ls[0] == 'End of system activity file unexpected' :
+            continue
+        elif len(row_ls) <= 4:
+            print("skipping :", row_ls)
+            continue
+        # try:
+        #     if len(row_ls) != len(header[0]):
+        #         print("condition met \n\n", row_ls,'\n',  header)
+        # except: "continuing..."
+        #     # continue
         else:
             print("I am this row: ", row_ls)
             data_ls.append(row_ls)
-            for item in row_ls:
-                print("splitting this sucker", item.strip())
-            print('print row count', data_ls[count])
-            count += 1
-        # for i in row_ls: # Maybe log this in the future.
-        #     print(i, ' : ', type(i))
-    # print(header)
-    print('will return \n', data_ls)
 
-    return data_ls
+        count += 1
+    data_info = header + data_ls
+    print("Header \n", header)
+    print("Data List\n", data_ls)
+    return data_info
 
 def ssh_connector(dest_host):
     pass

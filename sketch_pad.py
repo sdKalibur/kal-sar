@@ -38,3 +38,14 @@ stat_list = csv_object.strip().split('\n')
 
 for row in stat_list:
     print(row.split(';'))
+
+"""
+
+>>> c_ls =  [ str(_) for _ in row_ls[1:4] ]
+>>> c_ls
+['2', '3', '4']
+>>> c_ls = row_ls[0] 
+>>> c_ls
+
+
+"""
