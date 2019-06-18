@@ -52,6 +52,8 @@ python is protocol oriented language.
             if not 'bar' in body:
                 raise TypeError("That method does not exist")
             return super().__new__(cls, name,bases,body)
+    Use Assert to check if the mthod exists.
+    
             
 # Decorators
 **wrapping** functions within functions
