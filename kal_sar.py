@@ -81,11 +81,11 @@ def get_sysstat_day(day,mode='') :
     sadf_command = ''
     for i in sar_opts:
         sadf_command += str(i).center(len(str(i))+1,' ')
-    # print('I will execute this:', sadf_command)
+    print('I will execute this:', sadf_command)
     my_sadf = subprocess.getoutput(sadf_command)
     # print('My sadf output:\n', my_sadf)
 
-    return sadf_command # my_sadf
+    return sadf_command[0] # my_sadf
 
 def get_stat_mode():
     """ Gets the desired sysstat matric e,g cpu load, diskIO, etc. """
