@@ -2,10 +2,12 @@
 #!/usr/bin/env python3
 
 import paramiko,sys, subprocess
-from kal_sar import main as get_sar
+import argparse
+
+from kal_sar import get_sysstat_day as get_sar
 
 
-def ssh_konnector(hostname ='localhost', command='ls', *args):
+def ssh_konnector(hostname ='localhost', port=22, username='rhel', password='rhel', command='uptime',  *args):
     # if len(sys.argv) < 4:
     #     print("args missing")
     #     sys.exit()
@@ -16,12 +18,13 @@ def ssh_konnector(hostname ='localhost', command='ls', *args):
     # password = sys.argv[2]
     # command = sys.argv[3]
 
-    command = get_sar()
+    # command = get_sar()
 
-    username = 'kalibur'
-    password = 'p4ss3d'
-    port = 22
-
+    # username = 'rhel'
+    # password = 'rhel'
+    # port = 22
+    print(hostname, username, password, command)
+    command = input("enter your command: ")
     print("trying to setup connection")
     try:
         client = paramiko.SSHClient()
@@ -46,10 +49,10 @@ def ssh_konnector(hostname ='localhost', command='ls', *args):
     return stdout
 
 # ssh_konnector(command='uptime')
-ssh_konnector(hostname='kalibur-mce', command="sadf   -d   --  /var/log/sysstat/sa15     -s 12:00 -e 17:00   -q")
+# ssh_konnector(hostname='kalibur-mce', command="sadf   -d   --  /var/log/sysstat/sa15     -s 12:00 -e 17:00   -q")
 
 def main():
     pass
 
 if __name__ == '__main__':
-    ssh_konnector()
+    ssh_konnector(*args)
