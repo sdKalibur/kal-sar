@@ -1,35 +1,35 @@
-#!/usr/bin/env python3g
 
-import paramiko
-import sys, subprocess
+#!/usr/bin/env python3
+
+import paramiko,sys, subprocess
 import argparse
 
 from kal_sar import get_sysstat_day as get_sar
 
 
-
-parser = argparse.ArgumentParser(description='Ssh into a server')
-parser.add_argument('hostname', help='hostname must dns resolvable or IP address.', default='localhost', type=str )
-parser.add_argument('-m', '--mode', help="enter performance matrix", default='cpu_load')
-parser.add_argument('-u', '--username', help="Specify a user with ssh access to target host.", default="rhel")
-parser.add_argument('-p', '--password', help="Enter a password for the user in use.", default="rhel")
-parser.add_argument('-P', '--port', help="Set the ssh port for this connection.", default=22, type=int)
-
-print("trying to setup connection: \n" + str(parser.parse_args()))
 def ssh_konnector():
-    """ssh client connector"""
-    command == 'top'
+    parser = argparse.ArgumentParser(description='Ssh into a server')
+    parser.add_argument('hostname',  type=str, nargs='+', help='hostname must dns resolvable or IP address.')
+    parser.add_argument('-m','--mode',help="enter performance matrix", default='cpu_load')
+    parser.add_argument('-u','--username', help="Specify a user with ssh access to target host.", default="rhel")
+    parser.add_argument('-p','--password', help="Enter a password for the user in use.", default="rhel")
 
-    # command == mode
+    port = 22
 
-    client.connect(hostname, timeout='20')
+    # command = get_sar
+    # username = 'rhel'
+    # password = 'rhel'
+    # port = 22
+    print(hostname, username, password, command)
+    command = input("enter your command: ")
+    print("trying to setup connection")
     try:
         client = paramiko.SSHClient()
         client.load_host_keys('known_hosts')
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         #assert isinstance(password, object)
-        client.connect(hostname, timeout=20)
+        client.connect(hostname, port=port, username=username, password=password)
         print("I wanna run: ", command)
         stdin, stdout, stderr = client.exec_command(command)
         print(stdout.read())
@@ -47,10 +47,9 @@ def ssh_konnector():
 
 # ssh_konnector(command='uptime')
 # ssh_konnector(hostname='kalibur-mce', command="sadf   -d   --  /var/log/sysstat/sa15     -s 12:00 -e 17:00   -q")
-#
-# def main():
-#     ssh_konnector()
-#
-#
-# if __name__ == '__main__':
-#      main()
+
+def main():
+    pass
+
+if __name__ == '__main__':
+    ssh_konnector()
