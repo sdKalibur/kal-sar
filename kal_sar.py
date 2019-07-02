@@ -86,7 +86,7 @@ def get_sysstat_day(day,mode='') :
     # print('My sadf output:\n', my_sadf)
 
     # return sadf_command[0] # my_sadf
-    return my_sadf
+    return sadf_command
 
 def get_stat_mode():
     """ Gets the desired sysstat matric e,g cpu load, diskIO, etc. """

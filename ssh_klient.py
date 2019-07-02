@@ -56,5 +56,5 @@ if __name__ == '__main__':
     username = arguments.username
     password = arguments.password
     port = arguments.port
-
-    ssh_konnector(hostname, password, username, port, command)
+    day = input("Which day would you like system stats, options are 1 to 31: ")
+    ssh_konnector(hostname, password, username, port, get_sar(str(day)))
