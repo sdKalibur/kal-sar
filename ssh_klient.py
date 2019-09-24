@@ -7,7 +7,8 @@ import argparse
 LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s" # datefmt=\"%m/%d/%Y %I:%M:%S %p %Z\" "
 
 logging.basicConfig(filename="ssh-klient.log",
-                    level = logging.DEBUG,
+                    # level = logging.DEBUG,
+                    level = logging.INFO,
                     format = LOG_FORMAT,
                     datefmt =  "%m/%d/%Y %I:%M:%S %p %Z"
                     )
@@ -29,23 +30,27 @@ def ssh_konnector(hostname, password, username, port, command):
         client.connect(hostname=hostname, port=port, username=username, password=password, timeout=10, auth_timeout=10,
                        gss_deleg_creds=True, allow_agent=True, )
         stdin, stdout, stderr = client.exec_command(command)
-        logger.info(logTime, stderr)
+        logger.info(stdout)
         # raise NoValidConnectionsError(errors)
         #   paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 10.42.0.2
     except paramiko.ssh_exception.NoValidConnectionsError as err:
-        logger.error(logTime, err)
+        logger.error(err)
         print("Failed to establish a connection", err)
         raise err
     except paramiko.ssh_exception.AuthenticationException as err:
-        logger.error(logTime, err)
+        logger.warn(hostname, err)
         print("Auth failed", err)
         raise err
-
+    except paramiko.ssh_exception.SSHException as err:
+        logger.error(str(hostname) + " " + str(err))
+        print("Auth failed", err)
+        raise err
     except:
-        print("An error ocured!")
+        print("Some error ocured!  Unrachable host")
     finally:
-        print("Stdout says : \n:", stdout.read().decode('utf-8'))
-        print("stderr says : \n:", stderr.read().decode('utf-8'))
+        # print("Stdout says : \n:", stdout.read().decode('utf-8'))
+        # print("stderr says : \n:", stderr.read().decode('utf-8'))
+        logger.info(str(hostname) + " " + " Closing connection now.")
         client.close()
 
     print("Closing connection now.")
