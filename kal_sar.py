@@ -5,35 +5,16 @@ from dis import dis
 
 # functional stuff
 import datetime
-import sys, csv, json, os, platform
+import csv, platform
 import subprocess
-# import paramiko for ssh
+import pandas as pd
+import matplotlib.pyplot as plt
+
 
 class kal_server():
     pass
     # server_name = self.server_name
     # server_address = server_addr
-
-
-def open_sar_file () :
-    pass
-
-def get_high_iowait () :
-    pass
-
-def get_high_load () :
-    pass
-
-def get_high_cpu_util () :
-    pass
-
-def get_high_disk_util () :
-    pass
-
-def draw_a_graph () :
-    """Graph my system stats"""
-    # -g - generates a graph
-    pass
 
 def sadf_time_window (): #start, end) :
     """Search sysstat for a time period"""
@@ -51,21 +32,27 @@ def sysstat_file_path():
         sysstat_file = '/var/log/sa/sa'
     return sysstat_file
 
-def get_sysstat_day(day,mode='') :
+def get_sysstat_day(day='',mode='') :
     """ Locates sysstat file and excutes sadf command """
-    if len(day) <= 1:
-        day = '0' + day
-    else:
-        day = day
-    sysstat_file = sysstat_file_path() + str(day)
-    stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
-    # stat_opts = ['-d', '--dev=sda']
-    sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window()) ]
+    try:
+        if day == '':  # or 0;
+            day = datetime.date.today().day
 
-    if mode == '':
-        mode = str(get_stat_mode())
-    else:
-        pass
+        if len(day) <= 1:
+            day = '0' + str(day)
+        if day > datetime.date.max.day:
+            except: "ERRORO : Day is out of range max for " + datetime.datetime.now().mon + " of the " + day + " month is invalid."
+        else:
+            day = day
+        sysstat_file = sysstat_file_path() + str(day)
+        stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
+        # stat_opts = ['-d', '--dev=sda']
+        sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window()) ]
+
+        if mode == '':
+            mode = str(get_stat_mode())
+        else:
+            pass
 
     # try:
     #     if mode not in modes.items:

@@ -26,9 +26,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 s = pd.Series([1,2,5,'np','nan',6,8])
-s
+
 dates = pd.date_range('20190926', periods=6)
-dates
 
 df = pd.DataFrame(np.random.randn(6,4), index=dates,columns=['one','two','three','four'])
 
