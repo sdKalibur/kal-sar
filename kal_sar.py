@@ -59,8 +59,7 @@ def get_sysstat_day(day,mode='') :
         day = day
     sysstat_file = sysstat_file_path() + str(day)
     stat_fmt = '-d' # -d is database friendly csv with ';' delimeter
-    # stat_opts = ['-d', '--dev=sda']
-    sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window()) ]
+    sar_opts = ['sadf', stat_fmt, '--', str(sysstat_file), str(sadf_time_window())]
 
     if mode == '':
         mode = str(get_stat_mode())
@@ -77,16 +76,20 @@ def get_sysstat_day(day,mode='') :
     sar_opts.append(mode)
 
     sar_opts = [i.center(len(i) + 2, ' ') for i in sar_opts ]
-    print('stat mode: ', mode)
+    print('DEBUG: stat mode: ', mode)
     sadf_command = ''
     for i in sar_opts:
         sadf_command += str(i).center(len(str(i))+1,' ')
-    print('I will execute this:', sadf_command)
+    print('DEBUG will execute:', sadf_command)
     my_sadf = subprocess.getoutput(sadf_command)
     # print('My sadf output:\n', my_sadf)
 
     # return sadf_command[0] # my_sadf
-    return sadf_command
+    sar_data_file = open(str(str(day)+str(mode)+'_sys_stat_data.csv'), 'a')
+    sar_data_file.write(my_sadf)
+    sar_data_file.close()
+    print(my_sadf)
+    return my_sadf
 
 def get_stat_mode():
     """ Gets the desired sysstat matric e,g cpu load, diskIO, etc. """
@@ -101,11 +104,11 @@ def get_stat_mode():
     for i in menu_modes:
         print('\t', menu_modes.index(i), ' : ', i)
     # print(menu_modes)
-    mode_index = int(input('Enter a numeric value matching at index above: '))
+    mode_index = int(input('Enter a numeric value matching an index above: '))
     mode = modes.get(menu_modes[mode_index])
     return str(mode)
 
-    # get a function to work the netty gretty of the specific device selection bits
+    # get a function to work the netty gretty of the specific device selection bits iface=DEV
 
 def csv_stat_w(csv_obj):
     """give me a csv formatted object to write"""
@@ -125,7 +128,9 @@ def csv_file_r(csv_file):
     return csv_list
 
 def csv_obj_iter(csv_obj):
-    """ I interate a csv formatted obj"""
+    """ I iterate a sysstat csv obj and return a header\
+        and body list of lists
+    """
 
     stat_list = csv_obj.strip().split('\n')
     count = 0
@@ -139,25 +144,24 @@ def csv_obj_iter(csv_obj):
             else:
                 continue
             # print("I modified header :\n", header)
-        elif row_ls[0] == 'End of system activity file unexpected' :
+        elif row_ls[0] == 'End of system activity file unexpected':
             continue
         elif len(row_ls) <= 4:
             print("skipping :", row_ls)
             continue
-        # try:
-        #     if len(row_ls) != len(header[0]):
-        #         print("condition met \n\n", row_ls,'\n',  header)
-        # except: "continuing..."
-        #     # continue
         else:
-            print("I am this row: ", row_ls)
+            # print("I am this row: ", row_ls)
             data_ls.append(row_ls)
-
         count += 1
+
+    header[0][0] = header[0][0].strip('#').strip(' ').capitalize() # Remove the # from headers
+
     data_info = header + data_ls
     print("Header \n", header)
     print("Data List\n", data_ls)
-    return data_info
+    print('This is my data: ', data_info)
+    # return data_info
+    return header, data_ls
 
 def ssh_connector(dest_host):
     pass

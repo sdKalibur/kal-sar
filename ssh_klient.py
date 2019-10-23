@@ -4,56 +4,69 @@ import paramiko, logging, datetime , subprocess
 import argparse
 
 # Create loggeimer
-LOG_FORMAT = "%(levelname)s %(asctime)s - %(message)s" # datefmt=\"%m/%d/%Y %I:%M:%S %p %Z\" "
+log_fmt = "%(levelname)s %(asctime)s - %(message)s"
 
 logging.basicConfig(filename="ssh-klient.log",
-                    # level = logging.DEBUG,
-                    level = logging.INFO,
-                    format = LOG_FORMAT,
-                    datefmt =  "%m/%d/%Y %I:%M:%S %p %Z"
+                    level=logging.DEBUG,
+                    # level = logging.INFO,
+                    format=log_fmt,
+                    datefmt="%m/%d/%Y %I:%M:%S %p %Z"
                     )
-                   # datefmt = "%m/%d/%Y %I:%M:%S %p %Z")
+
 logger = logging.getLogger()
 logTime = datetime.datetime.today().ctime()
 def ssh_konnector(hostname, password, username, port, command):
     """ssh connection object"""
+    """No sudo support need to work on that."""
 # https://www.programcreek.com/python/example/11460/paramiko.AuthenticationException
-    print("trying to setup connection")
+    print("DEBUG: trying to setup connection")
     try:
         # Define connection object
         # checks for unreachable or otherwise fake hosts
         client = paramiko.SSHClient()
         client.load_host_keys('known_hosts')
         client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.get_transport()
         # Make connection
-
-        client.connect(hostname=hostname, port=port, username=username, password=password, timeout=10, auth_timeout=10,
-                       gss_deleg_creds=True, allow_agent=True, )
-        stdin, stdout, stderr = client.exec_command(command)
-        logger.info(stdout)
+        client.connect(hostname=hostname,
+                       port=port,
+                       username=username, password=password,
+                       timeout=10, auth_timeout=10,
+                       gss_deleg_creds=True,
+                       # allow_agent=True,
+                       )
+        stdin, stdout, stderr = client.exec_command(command,
+                                                    get_pty=True,
+                                                    )
+        # stdin, stdout,stderr = client.invoke_shell()
+        output = stdout.read().decode('utf-8')
+        print(output)
+        logger.debug("DEBUG: Executing command > " + str(command) + " :\n" + output)
+        logger.error(str(hostname) + " : " + stderr)
+        print(stdout)
         # raise NoValidConnectionsError(errors)
         #   paramiko.ssh_exception.NoValidConnectionsError: [Errno None] Unable to connect to port 22 on 10.42.0.2
     except paramiko.ssh_exception.NoValidConnectionsError as err:
         logger.error(err)
-        print("Failed to establish a connection", err)
+        print("DEBUG: Failed to establish a connection", err)
         raise err
     except paramiko.ssh_exception.AuthenticationException as err:
-        logger.warn(hostname, err)
-        print("Auth failed", err)
+        logger.error(hostname, err)
+        print("DEBUG: Auth failed", err)
         raise err
     except paramiko.ssh_exception.SSHException as err:
         logger.error(str(hostname) + " " + str(err))
-        print("Auth failed", err)
+        print("DEBUG: Auth failed", err)
         raise err
     except:
-        print("Some error ocured!  Unrachable host")
+        print("DEBUG: Some error ocured! stderr: " + str(stderr.read().decode('utf-8')))
     finally:
         # print("Stdout says : \n:", stdout.read().decode('utf-8'))
         # print("stderr says : \n:", stderr.read().decode('utf-8'))
         logger.info(str(hostname) + " " + " Closing connection now.")
         client.close()
 
-    print("Closing connection now.")
+    print("DEBUG: Closing connection now.")
 
     return stdout, stderr
 
@@ -67,7 +80,7 @@ if __name__ == '__main__':
     parser.add_argument('-P', '--password', help="Enter a password for the user in use.")  # , default="rhel")
     parser.add_argument('-p', '--port', help="Specify port number default is 22.", default=22)
 
-    print("Here are my args parsed", parser.parse_args())
+    print("DEBUG: Here are my args parsed", parser.parse_args())
     arguments = parser.parse_args()
 
     hostname = arguments.hostname
