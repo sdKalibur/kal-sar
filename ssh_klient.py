@@ -58,6 +58,7 @@ def ssh_konnector(hostname, password, username, port, command):
         logger.error(str(hostname) + " " + str(err))
         print("DEBUG: Auth failed", err)
         raise err
+    # ERROR 10/23/2019 10:48:52 AM BST - [Errno None] Unable to connect to port 15454 on 127.0.0.1
     except:
         print("DEBUG: Some error ocured! stderr: " + str(stderr.read().decode('utf-8')))
     finally:
