@@ -7,6 +7,7 @@ from dis import dis
 import datetime
 import sys, csv, json, os, platform
 import subprocess
+import ssh_klient from ssh_klient as ssh
 # import paramiko for ssh
 
 class kal_server():
@@ -188,7 +189,8 @@ def main () :
 
 if __name__ == '__main__' :
     main()
-
+    # call ssh client
+    
 # @csv_obj_iter
 # main()
 # cur_day = datetime.date.today().day
