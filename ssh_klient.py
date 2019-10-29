@@ -71,7 +71,11 @@ def ssh_konnector(hostname, password, username, port, command):
     return stdout, stderr
 
 if __name__ == '__main__':
-    """Collects parameters to be used for creating ssh connection."""
+
+
+    """
+    Collects parameters to be used for creating ssh connection.
+    """
     parser = argparse.ArgumentParser(description='Ssh client to run command on remote system.')
     parser.add_argument('hostname', help='hostname must dns resolvable or IP address.', default='localhost')
     parser.add_argument('-c', '--command', help="The command you wish to run on remote system.",
