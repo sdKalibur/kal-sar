@@ -7,7 +7,8 @@ from dis import dis
 import datetime
 import sys, csv, json, os, platform
 import subprocess
-import ssh_klient from ssh_klient as ssh
+
+#import ssh_klient from ssh_klient as ssh
 # import paramiko for ssh
 
 class kal_server():
@@ -163,6 +164,16 @@ def csv_obj_iter(csv_obj):
     print('This is my data: ', data_info)
     # return data_info
     return header, data_ls
+
+class Kstat_host:
+""" Create pandas dataframe """
+    # analyze data frame for bootle necks
+
+    def kstat_load:
+        pass
+
+    def kstat_cpu_util:
+        pass
 
 def ssh_connector(dest_host):
     pass
