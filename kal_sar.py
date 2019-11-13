@@ -7,8 +7,7 @@ from dis import dis
 import datetime
 import sys, csv, json, os, platform
 import subprocess
-
-#import ssh_klient from ssh_klient as ssh
+# import ssh_klient from ssh_klient as ssh
 # import paramiko for ssh
 
 class kal_server():
@@ -106,8 +105,22 @@ def get_stat_mode():
     for i in menu_modes:
         print('\t', menu_modes.index(i), ' : ', i)
     # print(menu_modes)
-    mode_index = int(input('Enter a numeric value matching an index above: '))
-    mode = modes.get(menu_modes[mode_index])
+    try:
+        mode_index = int(input('Enter a numeric value matching an index above: '))
+        mode_index = 0
+
+        # if mode_index not in range(0, (len(modes))):
+    except ValueError as e:
+        mode_index = 0
+        print("Defaulting to ", menu_modes[mode_index])
+
+
+    finally:
+        mode_index = 0
+
+    print('My mode', mode_index)
+    mode = modes[menu_modes[mode_index]]
+
     return str(mode)
 
     # get a function to work the netty gretty of the specific device selection bits iface=DEV
@@ -141,7 +154,7 @@ def csv_obj_iter(csv_obj):
     for row in stat_list:
         row_ls = (row.split(';'))
         if '#' in row_ls[0]:
-            if  len(header) == 0:
+            if len(header) == 0:
                 header.append(row_ls)
             else:
                 continue
@@ -149,31 +162,25 @@ def csv_obj_iter(csv_obj):
         elif row_ls[0] == 'End of system activity file unexpected':
             continue
         elif len(row_ls) <= 4:
-            print("skipping :", row_ls)
+            # print("skipping :", row_ls)
             continue
         else:
             # print("I am this row: ", row_ls)
             data_ls.append(row_ls)
         count += 1
+    print(data_ls)
+    print('header', len(header))
+    header[0][0] = header[0][0].strip('#').strip(' ').capitalize()  # Remove the # from headers
 
-    header[0][0] = header[0][0].strip('#').strip(' ').capitalize() # Remove the # from headers
-
-    data_info = header + data_ls
-    print("Header \n", header)
-    print("Data List\n", data_ls)
-    print('This is my data: ', data_info)
+    header = header[0]
+    ## data_info = header + data_ls
+    # print("Header \n", header)
+    # print("Data List\n", data_ls)
+    # print('This is my data: ', data_info)
     # return data_info
+    print("Header length", len(header[0]), 'Header values', header)
+    print("Data list length ", len(data_ls), len(data_ls[0]))
     return header, data_ls
-
-class Kstat_host:
-""" Create pandas dataframe """
-    # analyze data frame for bootle necks
-
-    def kstat_load:
-        pass
-
-    def kstat_cpu_util:
-        pass
 
 def ssh_connector(dest_host):
     pass
@@ -194,9 +201,7 @@ def main () :
     print(day)
 
     stat_info = csv_obj_iter(get_sysstat_day(day))
-    # print('Return info : \n', stat_info)
-    # for _ in stat_info:
-    #      print(_, end='\n')
+
 
 if __name__ == '__main__' :
     main()
