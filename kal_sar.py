@@ -82,7 +82,11 @@ def get_sysstat_day(day,mode='') :
     for i in sar_opts:
         sadf_command += str(i).center(len(str(i))+1,' ')
     print('DEBUG will execute:', sadf_command)
-    my_sadf = subprocess.getoutput(sadf_command)
+    try:
+        my_sadf = subprocess.getoutput(sadf_command)
+    except Exception as e:
+        print('Errer generate', e)
+
     # print('My sadf output:\n', my_sadf)
 
     # return sadf_command[0] # my_sadf
