@@ -32,7 +32,7 @@ def dseries():
 
     dseries = []
     for _ in data:
-        dseries.append(_[6])
+        dseries.append(_[filter])
     print(dseries)
     return dseries
 
