@@ -96,7 +96,7 @@ def get_sysstat_day(day,mode='') :
     print(my_sadf)
     return my_sadf
 
-def get_stat_mode():
+def get_stat_mode(mode='-q'):
     """ Gets the desired sysstat matric e,g cpu load, diskIO, etc. """
     # This should be the starting point, collected the mode, and time requirements finally doing the analysis.
 
@@ -108,19 +108,8 @@ def get_stat_mode():
     print('select a mode index :')
     for i in menu_modes:
         print('\t', menu_modes.index(i), ' : ', i)
-    # print(menu_modes)
-    try:
-        mode_index = int(input('Enter a numeric value matching an index above: '))
-        mode_index = 0
-
-        # if mode_index not in range(0, (len(modes))):
-    except ValueError as e:
-        mode_index = 0
-        print("Defaulting to ", menu_modes[mode_index])
-
-
-    finally:
-        mode_index = 0
+        # print(menu_modes)
+    mode_index = int(input('Enter a numeric value matching an index above:'))
 
     print('My mode', mode_index)
     mode = modes[menu_modes[mode_index]]
@@ -183,6 +172,7 @@ def csv_obj_iter(csv_obj):
     # print('This is my data: ', data_info)
     # return data_info
     print("Header length", len(header[0]), 'Header values', header)
+    print("")
     print("Data list length ", len(data_ls), len(data_ls[0]))
     return header, data_ls
 
@@ -205,7 +195,9 @@ def main () :
     print(day)
 
     stat_info = csv_obj_iter(get_sysstat_day(day))
+    print("DEBUG:  stat info.", stat_info)
 
+    return stat_info
 
 if __name__ == '__main__' :
     main()

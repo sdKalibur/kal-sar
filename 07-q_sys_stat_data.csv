@@ -47,4 +47,4 @@ rhel.mac.local;239;2019-11-07 16:05:01 UTC;0;605;0.09;0.51;0.33;0
 rhel.mac.local;600;2019-11-07 16:15:01 UTC;5;757;0.95;0.40;0.29;0
 rhel.mac.local;600;2019-11-07 16:25:01 UTC;0;808;0.29;0.29;0.27;0
 rhel.mac.local;600;2019-11-07 16:35:01 UTC;0;831;0.24;0.14;0.19;0
-rhel.mac.local;600;2019-11-07 16:45:01 UTC;0;849;1.20;0.57;0.32;0
+rhel.mac.local;600;2019-11-07 16:45:01 UTC;0;849;1.20;0.57;0.32;0Cannot open /var/log/sysstat/sa07: No such file or directory

@@ -12,10 +12,21 @@ data = data_set[1]
 print(labels)
 
 metric = input("Enter a metric from above list >")
-
-
 filter = labels.index(metric)
-print('#' * 40)
+
+
+def get_measure():
+    data_set = kal_sar()
+    N = 7  # len(data_set[0])
+    labels = data_set[0]
+    data = data_set[1]
+
+    print(labels)
+
+    metric = input("Enter a metric from above list >")
+
+    filter = labels.index(metric)
+    print('#' * 40)
 
 def tseries():
     """Create data series for selected metric"""
