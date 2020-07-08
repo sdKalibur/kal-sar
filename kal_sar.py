@@ -5,6 +5,7 @@ from dis import dis
 
 # functional stuff
 import datetime
+from datetime import date
 import sys, csv, json, os, platform
 import subprocess
 # import ssh_klient from ssh_klient as ssh
@@ -67,13 +68,6 @@ def get_sysstat_day(day,mode='') :
     else:
         pass
 
-    # try:
-    #     if mode not in modes.items:
-    #         print(mode, "Is an invalid mode.  Mode options are: \n" )
-    #     else:
-    #         sar_opts.append(str(mode))
-
-
     sar_opts.append(mode)
 
     sar_opts = [i.center(len(i) + 2, ' ') for i in sar_opts ]
@@ -82,18 +76,22 @@ def get_sysstat_day(day,mode='') :
     for i in sar_opts:
         sadf_command += str(i).center(len(str(i))+1,' ')
     print('DEBUG will execute:', sadf_command)
+
     try:
         my_sadf = subprocess.getoutput(sadf_command)
     except Exception as e:
-        print('Errer generate', e)
+        print('Errer getting the sysstat file : \n {}'.format(e))
+        sys.exit(1)
 
-    # print('My sadf output:\n', my_sadf)
-
-    # return sadf_command[0] # my_sadf
-    sar_data_file = open(str(str(day)+str(mode)+'_sys_stat_data.csv'), 'a')
-    sar_data_file.write(my_sadf)
-    sar_data_file.close()
-    print(my_sadf)
+#    try:
+#        sar_data_file = open(str(str(day)+str(mode)+'_sys_stat_data.csv'), 'a')
+#        print(sar_data_file)
+#        sar_data_file.write(my_sadf)
+#        sar_data_file.close()
+#        print(my_sadf)
+#    except Exception as e:
+#        print("There is an issue getting the sysstat file: \n {}".fromat(e))
+#        sys.exit(2)
     return my_sadf
 
 def get_stat_mode(mode='-q'):
@@ -162,18 +160,22 @@ def csv_obj_iter(csv_obj):
             data_ls.append(row_ls)
         count += 1
     print(data_ls)
-    print('header', len(header))
-    header[0][0] = header[0][0].strip('#').strip(' ').capitalize()  # Remove the # from headers
 
-    header = header[0]
+    if len(header) > 0:
+        print('header', len(header))
+        header[0][0] = header[0][0].strip('#').strip(' ').capitalize()  # Remove the # from headers
+        header = header[0]
+        print("Header length", len(header[0]), 'Header values', header)
+        print("")
+        print("Data list length ", len(data_ls), len(data_ls[0]))
+    else:
+        print("Nothing in that row")
     ## data_info = header + data_ls
     # print("Header \n", header)
     # print("Data List\n", data_ls)
     # print('This is my data: ', data_info)
     # return data_info
-    print("Header length", len(header[0]), 'Header values', header)
-    print("")
-    print("Data list length ", len(data_ls), len(data_ls[0]))
+
     return header, data_ls
 
 def ssh_connector(dest_host):
@@ -186,8 +188,10 @@ def main () :
     # mode = 'cpu_util'
 
     day = str(input('Which day do you want to check stats for :')) # need to add contraints for not accepting invalid days.
-    if len(day) <= 1:
+    if len(day) == 1:
         day = '0' + day
+    if not day:
+        day = date.today().strftime("%d")
     else:
         day = day
 
@@ -202,14 +206,5 @@ def main () :
 if __name__ == '__main__' :
     main()
     # call ssh client
-    
-# @csv_obj_iter
-# main()
-# cur_day = datetime.date.today().day
-# print(cur_day)
-# sysstat_file = '/var/log/sysstat/sa' + str(cur_day)
-#
-# sadf_command = 'sadf -d -- -n DEV --iface=wlp1s0' + sysstat_file
-# os.system(sadf_command)
 
 # os.system('sadf -j -- -n DEV --iface=wlp1s0 /var/log/sysstat/sa27')
